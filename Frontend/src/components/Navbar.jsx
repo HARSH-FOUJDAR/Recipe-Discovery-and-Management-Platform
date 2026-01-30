@@ -5,51 +5,59 @@ import axios from "axios";
 import {
   LayoutDashboard,
   Utensils,
-  Search,
-  Star,
   User,
   LogOut,
   Plus,
   ChefHat,
   ChevronLeft,
   ClipboardList,
+  Loader2,
 } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
-
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
     const fetchUser = async () => {
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
       try {
         const { data } = await axios.get(
-          "https://recipe-share-platform-backend.vercel.app/auth/profile",
+          "https://recipe-share-platform-backend-2.onrender.com/auth/profile",
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           },
         );
-
         setUser(data.user);
-      } catch (error) {
-        console.error("User fetch failed", error);
+      } catch (err) {
+        console.error("User fetch failed", err);
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         navigate("/login");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUser();
-  }, [token, navigate]);
+  }, [navigate, token]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   const navItems = [
     {
@@ -58,7 +66,6 @@ const Navbar = () => {
       path: "/recipe-home",
     },
     { icon: <Utensils size={20} />, label: "My Recipes", path: "/recipe-my" },
-    { icon: <Star size={20} />, label: "Favorites", path: "/favorites" },
     { icon: <User size={20} />, label: "Profile", path: "/profile" },
     {
       icon: <ClipboardList size={20} />,
@@ -67,10 +74,13 @@ const Navbar = () => {
     },
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen w-full">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
 
   return (
     <motion.aside
@@ -87,21 +97,28 @@ const Navbar = () => {
 
       {/* Logo */}
       <div className="p-6 flex items-center gap-3">
-        <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
+        <div className="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center">
           <ChefHat size={22} />
         </div>
-        {!isCollapsed && <span className="font-black">RECIPENEST</span>}
+        {!isCollapsed && (
+          <span className="text-2xl font-black tracking-tight text-gray-200">
+            Recipe<span className="text-red-500">Nest</span>
+          </span>
+        )}
       </div>
 
-      {/* Nav */}
+      {/* Navigation Items */}
       <nav className="flex-1 px-3 space-y-1">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link key={item.label} to={item.path}>
               <div
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl
-                ${isActive ? "bg-emerald-500/20" : "text-gray-400 hover:bg-white/5"}`}
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl ${
+                  isActive
+                    ? "bg-emerald-500/20"
+                    : "text-gray-400 hover:bg-white/5"
+                }`}
               >
                 {item.icon}
                 {!isCollapsed && <span>{item.label}</span>}
@@ -111,7 +128,7 @@ const Navbar = () => {
         })}
       </nav>
 
-      {/* Create */}
+      {/* Create Recipe Button */}
       <div className="px-4 mb-4">
         <button
           onClick={() => navigate("/recipes")}
@@ -127,9 +144,8 @@ const Navbar = () => {
         <div className="px-4 pb-6">
           <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl">
             <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center">
-              {user.username?.charAt(0)}
+              {user.username?.charAt(0).toUpperCase()}
             </div>
-
             {!isCollapsed && (
               <>
                 <div className="flex-1">

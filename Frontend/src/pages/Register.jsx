@@ -8,7 +8,7 @@ import { BsPencilSquare } from "react-icons/bs";
 
 const Register = () => {
   const navigate = useNavigate();
-
+  const [profileImage, setProfileImage] = useState(null);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,9 +21,24 @@ const Register = () => {
     setLoading(true);
 
     try {
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("MobileNum", Mobile);
+      formData.append("bio", Bio);
+      if (profileImage) {
+        formData.append("profileImage", profileImage);
+      }
+
       await axios.post(
         "https://recipe-share-platform-backend.vercel.app/auth/register",
-        { username, email, password, MobileNum: Mobile, bio: Bio },
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
 
       toast.success("Welcome to the community!");
@@ -111,6 +126,25 @@ const Register = () => {
                 />
               </div>
             </div>
+            {/* PROFILE IMAGE */}
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 ml-1">
+                Profile Image
+              </label>
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setProfileImage(e.target.files[0])}
+                className="block w-full text-sm text-slate-500
+      file:mr-4 file:py-2 file:px-4
+      file:rounded-xl file:border-0
+      file:text-sm file:font-semibold
+      file:bg-emerald-50 file:text-emerald-700
+      hover:file:bg-emerald-100 cursor-pointer"
+              />
+            </div>
+
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-slate-700 ml-1">
                 Add The Bio

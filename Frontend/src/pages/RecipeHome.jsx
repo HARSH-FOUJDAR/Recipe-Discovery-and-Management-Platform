@@ -10,10 +10,29 @@ const RecipeHome = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const API_BASE = "https://recipe-share-platform-backend.vercel.app/meals";
+  const [editRecipe, setEditRecipe] = useState(null);
+
+  const [title, setTitle] = useState("");
+  const [Description, setDescription] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [steps, setSteps] = useState("");
+  const [category, setCategory] = useState("");
+  const [cookingTime, setcookTime] = useState("");
+  const [photo, setPhoto] = useState("");
+
+  const handelEdit = (recipes) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setEditRecipe(recipes._id);
+    setTitle(recipes.title);
+    setDescription(recipes.Description);
+    setIngredients(recipes.ingredients.join(", "))
+    setSteps(recipes.steps);
+    setCategory(recipes.category);
+    setcookTime(recipes.cookTime);
+    setPhoto(recipes.photo)
+  };
   const token = localStorage.getItem("token");
 
-  
   let userId = null;
   if (token) {
     try {
@@ -37,7 +56,7 @@ const RecipeHome = () => {
 
       setRecipes(response.data.recipes || response.data);
     } catch (error) {
-      toast.error("Recipe load nahi ho saki");
+      toast.info("Please Wait ");
     } finally {
       setLoading(false);
     }

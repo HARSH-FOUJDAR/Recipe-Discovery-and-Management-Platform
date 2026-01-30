@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
@@ -7,9 +7,7 @@ import { Plus, Trash, Clock, Users, Video, Image, ChefHat } from "lucide-react";
 
 const CreateRecipe = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const recipeId = location.state?.recipeId; 
-
+  const { id: recipeId } = useParams(); // URL se id milegi
   const [title, setTitle] = useState("");
   const [instructions, setInstructions] = useState("");
   const [cookTime, setCookTime] = useState("");
@@ -29,7 +27,6 @@ const CreateRecipe = () => {
     }
   }, [navigate]);
 
-
   useEffect(() => {
     if (!recipeId) return;
 
@@ -41,7 +38,7 @@ const CreateRecipe = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         );
 
-        const recipe = res.data.recipe;
+        const recipe = res.data.recipe || res.data;
 
         setTitle(recipe.title || "");
         setInstructions(recipe.instructions || "");
@@ -52,14 +49,14 @@ const CreateRecipe = () => {
         setSteps(recipe.steps.length ? recipe.steps : [""]);
         setPhotos(recipe.photos.length ? recipe.photos : [""]);
       } catch (err) {
-        toast.error("Failed to load recipe data");
+        toast.error("Failed to load recipe");
       }
     };
 
     fetchRecipe();
   }, [recipeId]);
 
-  //  Dynamic Fields Helpers 
+  //  Dynamic Fields Helpers
   const handleAddInput = (state, setState) => setState([...state, ""]);
   const handleRemoveInput = (index, state, setState) => {
     if (state.length > 1) {
@@ -114,7 +111,7 @@ const CreateRecipe = () => {
           ? "Recipe updated successfully!"
           : "Recipe added successfully!",
       );
-      navigate("/");
+      navigate("/recipe-home");
     } catch (err) {
       toast.error(err.response?.data?.message || "Error saving recipe");
     } finally {
@@ -341,7 +338,7 @@ const CreateRecipe = () => {
             </button>
             <button
               type="button"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/recipes")}
               className="px-6 py-3 border rounded-lg text-gray-500 hover:bg-gray-100"
             >
               Cancel

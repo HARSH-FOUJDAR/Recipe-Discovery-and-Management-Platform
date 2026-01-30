@@ -31,7 +31,6 @@ const RecipeDetail = () => {
         setRecipe(data);
         setLikesCount(data.likes?.length || 0);
 
-        // Fix: if backend sends an array of user IDs who liked the recipe
         const currentUserId = res.data.currentUserId;
         setLiked(data.likes?.includes(currentUserId));
       } catch (err) {
@@ -174,7 +173,7 @@ const RecipeDetail = () => {
     return (
       <div className="text-center mt-20 text-gray-500 italic">
         <div className="fixed inset-0  flex flex-col justify-center items-center z-50">
-          <ClipLoader color="#ef4444" size={70} className="w-50"/>
+          <ClipLoader color="#ef4444" size={70} className="w-50" />
           <p className="mt-4 text-2xl text-gray-500 font-medium">
             Cooking up the details...
           </p>
@@ -241,9 +240,7 @@ const RecipeDetail = () => {
         </div>
       </div>
 
-  
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
-       
         <div className="lg:col-span-4">
           <div className="sticky top-24 space-y-8">
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">

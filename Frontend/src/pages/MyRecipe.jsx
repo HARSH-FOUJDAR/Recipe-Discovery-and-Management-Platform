@@ -114,12 +114,11 @@ const Myrecipe = () => {
                 {/* Edit & Delete Buttons */}
                 <div className="flex justify-between items-center gap-2 pt-3 border-t border-gray-100">
                   <button
-                    onClick={() =>
-                      navigate("/recipes", { state: { recipeId: recipe._id } })
-                    }
+                    onClick={() => navigate(`/recipes/${recipe._id}`)}
                     className="flex-1 flex justify-center cursor-pointer items-center gap-5 bg-yellow-500 text-white py-2 rounded-lg font-semibold hover:bg-yellow-600 transition-colors text-sm"
                   >
-                    <FaEdit className="text-xl text-gray-600" /> Edit
+                    <FaEdit className="text-xl text-gray-600 "></FaEdit>
+                    Edit
                   </button>
 
                   <button

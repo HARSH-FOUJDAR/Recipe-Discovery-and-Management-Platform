@@ -25,7 +25,12 @@ const App = () => {
         <Route path="/reset-password/:token" element={<Resetpassword />} />
 
         {/*  After Login */}
+        {/* New Recipe */}
         <Route path="/recipes" element={<CreateRecipe />} />
+
+        {/* Edit Recipe */}
+        <Route path="/recipes/:id" element={<CreateRecipe />} />
+
         <Route path="/recipe/:id" element={<RecipeDetail />} />
         <Route path="/meal-planner" element={<MealPlanner />} />
         <Route path="/profile" element={<Profile />} />

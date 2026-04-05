@@ -1,16 +1,51 @@
-# React + Vite
+RecipeNest – Full-Stack Recipe Sharing Platform
+RecipeNest is a professional MERN stack application that allows users to share and discover recipes, follow chefs, and plan meals. It was developed according to the coding assessment guidelines.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Features Implemented
+1. Recipe Management & Discovery
+Share Recipes: Users can add titles, ingredients, step-by-step instructions, and servings.
 
-Currently, two official plugins are available:
+Media Integration: Supports photos and YouTube video tutorials.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Advanced Search: Filter recipes based on ingredients, cuisine, and meal type.
 
-## React Compiler
+Ratings & Reviews: 1-5 star rating and detailed comments system.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. User & Social Features
+User Profiles: Personalized dashboard where users can manage their submitted recipes and favorites.
 
-## Expanding the ESLint configuration
+Follow System: Real-time system to follow and unfollow other chefs.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Favorites: Wishlist feature to save favorite recipes.
+
+3. Meal Planning & Shopping List
+Meal Planner: Weekly meal planning tool.
+
+Auto-Generated Shopping List: Automatically generates a shopping list of ingredients from selected recipes, which can be printed.
+
+Tech Stack
+Frontend: React.js, TailwindCSS, Framer Motion (Animations), Lucide React (Icons).
+
+Backend: Node.js, Express.js.
+
+Database: MongoDB Atlas.
+
+Auth: JSON Web Tokens (JWT) & BcryptJS.
+
+Deployment: * Frontend: Netlify / Vercel.
+
+Backend: Render. Project Structure
+plain text
+├── backend/
+│ ├── controllers/ # Logic for Recipes, Users, Follows, Favs
+│ ├── models/ # Mongoose Schemas (User.model, Recipe.model, etc.)
+│ ├── routes/ # Express Endpoints
+│ └── middleware/ # Authentication (JWT) & Error Handling
+├── frontend/
+│ ├── src/
+│ │ ├── components/ # Reusable UI (Navbar, RecipeCard, Loader)
+│ │ ├── pages/ # Main Views (Home, Profile, MealPlanner)
+│ │ └── App.js # React Router setup
+└── README.md
+⚙️ Setup & Installation
+1. Clone the project:

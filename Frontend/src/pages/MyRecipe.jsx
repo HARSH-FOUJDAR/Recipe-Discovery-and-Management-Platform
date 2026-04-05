@@ -1,193 +1,161 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Mail, Lock, ArrowRight, Loader2, UtensilsCrossed } from "lucide-react";
+import { Loader2, Search, Edit3, Trash2, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const MyRecipe = () => {
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [checkingToken, setCheckingToken] = useState(true);
 
-  // Check if token exists & valid
+  // Backend URL Base
+  const API_BASE = "https://recipe-share-platform-backend-2.onrender.com";
+
   useEffect(() => {
-    const checkToken = async () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        setCheckingToken(false); // No token, show login form
-        return;
-      }
-
+    const fetchMyRecipe = async () => {
       try {
-        const { data } = await axios.get(
-          "https://recipe-share-platform-backend-2.onrender.com/auth/profile",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        if (data.user) {
-          // Token valid, redirect to recipe-home
-          navigate("/recipe-home");
+        const token = localStorage.getItem("token");
+        if (!token) {
+          toast.error("Please login first");
+          navigate("/login");
+          return;
         }
+
+        const res = await axios.get(`${API_BASE}/recipes/myRecipe`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+    
+        setRecipes(res.data.recipes || []);
       } catch (err) {
-        // Token invalid or expired → remove it
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        toast.error("Failed to load your recipes");
+        console.error(err);
       } finally {
-        setCheckingToken(false);
+        setLoading(false);
       }
     };
 
-    checkToken();
+    fetchMyRecipe();
   }, [navigate]);
 
-  // Handle login form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this recipe?")) return;
 
     try {
-      const { data } = await axios.post(
-        "https://recipe-share-platform-backend-2.onrender.com/auth/login",
-        { email, password }
-      );
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_BASE}/recipes/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      toast.success("Welcome back, Chef!");
-      navigate("/recipe-home");
+      setRecipes((prev) => prev.filter((recipe) => recipe._id !== id));
+      toast.success("Recipe deleted successfully");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
+      toast.error("Failed to delete recipe");
     }
   };
 
+  const filteredData = recipes.filter((item) =>
+    item.title?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-  if (checkingToken) {
+  if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin" size={50} />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <Loader2 className="text-emerald-500 animate-spin" size={60} />
+        <p className="text-xl font-medium text-gray-600 mt-4">
+          Loading your kitchen...
+        </p>
       </div>
     );
-  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-4 font-sans">
-      <div className="w-full max-w-md">
-        {/* BRAND */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-emerald-600 rounded-2xl shadow-xl shadow-emerald-100 mb-4 transition-transform hover:scale-110">
-            <UtensilsCrossed className="text-white w-8 h-8" />
-          </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-            Recipe<span className="text-emerald-600">Nest</span>
-          </h1>
-          <p className="text-slate-500 mt-2 font-medium italic">
-            "Where every chef finds home."
-          </p>
+    <div className="bg-gray-50 min-h-screen">
+      <Navbar />
+
+      {/* Header Section */}
+      <div className="bg-orange-500 py-16 px-6 text-center text-white">
+        <h1 className="text-4xl font-extrabold mb-6 tracking-tight">
+          Your Recipe Collection
+        </h1>
+        <div className="max-w-md mx-auto relative">
+          <input
+            type="text"
+            placeholder="Search your dishes..."
+            className="w-full p-4 pl-15 rounded-2xl bg-white border border-black text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 backdrop-blur-sm transition-all"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Search className="absolute left-4 top-4 text-gray-900" size={20} />
         </div>
+      </div>
 
-        {/* LOGIN FORM */}
-        <div className="bg-white rounded-[2rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-8 md:p-10">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* EMAIL */}
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 ml-1">
-                Email Address
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
-                </div>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  placeholder="name@example.com"
-                  className="block w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 focus:bg-white transition-all outline-none text-sm"
-                />
-              </div>
-            </div>
-
-            {/* PASSWORD */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center px-1">
-                <label className="text-sm font-bold text-slate-700">
-                  Password
-                </label>
-                <Link
-                  to="/forget-password"
-                  className="text-sm font-bold text-emerald-600 hover:text-emerald-700"
-                >
-                  Forgot?
-                </Link>
-              </div>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
-                </div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                  className="block w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 focus:bg-white transition-all outline-none text-sm"
-                />
-              </div>
-            </div>
-
-            {/* LOGIN BUTTON */}
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        {recipes.length === 0 ? (
+          <div className="text-center mt-10">
+            <p className="text-gray-500 text-xl italic">
+              You haven’t created any recipes yet 
+            </p>
             <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center border-2 justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-70 shadow-lg shadow-slate-200 mt-2 cursor-pointer"
+              onClick={() => navigate("/recipes")}
+              className="mt-4 text-emerald-600 font-bold hover:underline"
             >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  Sign In
-                  <ArrowRight size={18} />
-                </>
-              )}
+              Start Cooking Now
             </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredData.map((recipe) => (
+              <div
+                key={recipe._id}
+                className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300"
+              >
+                <div className="relative h-48">
+                  <img
+                    src={
+                      recipe.photos?.[0] ||
+                      "https://via.placeholder.com/400x300"
+                    }
+                    className="w-full h-full object-cover"
+                    alt={recipe.title}
+                  />
+                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 text-xs font-bold text-gray-700 shadow-sm">
+                    <Clock size={14} className="text-emerald-500" />{" "}
+                    {recipe.cookTime} mins
+                  </div>
+                </div>
 
-            {/* DIVIDER */}
-            <div className="relative flex items-center py-2">
-              <div className="flex-grow border-t border-slate-100"></div>
-              <span className="flex-shrink mx-4 text-xs font-bold text-slate-300">
-                OR
-              </span>
-              <div className="flex-grow border-t border-slate-100"></div>
-            </div>
+                <div className="p-6">
+                  <h3 className="font-bold text-xl text-gray-800 truncate mb-4">
+                    {recipe.title}
+                  </h3>
 
-            {/* REGISTER LINK */}
-            <div className="text-center">
-              <Link to="/register">
-                <button
-                  type="button"
-                  className="w-full border-2 cursor-pointer border-slate-600 text-slate-600 hover:bg-slate-50 py-3.5 rounded-2xl font-bold transition-all flex items-center justify-center gap-2"
-                >
-                  Create Account
-                </button>
-              </Link>
-            </div>
-          </form>
-        </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => navigate(`/edit-recipe/${recipe._id}`)}
+                      className="flex-1 flex justify-center items-center gap-2 bg-emerald-50 text-emerald-600 py-3 rounded-xl font-bold hover:bg-emerald-100 transition-colors cursor-pointer"
+                    >
+                      <Edit3 size={18} />
+                      Edit
+                    </button>
 
-        {/* FOOTER */}
-        <p className="text-center mt-10 text-xs text-slate-400 font-medium">
-          Secure Login Powered by RecipeNest v2.0
-        </p>
+                    <button
+                      onClick={() => handleDelete(recipe._id)}
+                      className="flex items-center justify-center bg-red-50 text-red-500 p-3 rounded-xl hover:bg-red-100 transition-colors cursor-pointer"
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default Login;
+export default MyRecipe;

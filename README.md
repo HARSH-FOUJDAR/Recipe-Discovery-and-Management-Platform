@@ -10,6 +10,8 @@ A modern recipe-sharing platform where users can discover, search, and manage re
 
 * Browse and discover recipes
 * Search and filter recipes
+* Implements The All Social Features
+* LIKE COMMENTS SHARE FOLLOW FEATURES
 * Responsive design
 * Interactive UI
 * Smooth animations

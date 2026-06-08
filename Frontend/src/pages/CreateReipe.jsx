@@ -164,7 +164,6 @@ const CreateRecipe = () => {
                     required
                   />
                 </div>
-
                 <div>
                   <label className="text-sm font-bold text-gray-600 ml-1">
                     Recipe Category
@@ -383,7 +382,7 @@ const CreateRecipe = () => {
             <div className="flex flex-col md:flex-row gap-4">
               <button
                 disabled={loading}
-                className="flex-1 bg-orange-500 text-white py-5 rounded-2xl font-black text-xl hover:bg-orange-600 shadow-lg shadow-orange-200 transition-all disabled:opacity-50"
+                className="flex-1 bg-orange-500 text-white py-3  rounded-2xl font-black text-xl hover:bg-orange-600 shadow-lg shadow-orange-200 transition-all disabled:opacity-50"
               >
                 {loading
                   ? "Processing..."

@@ -140,7 +140,7 @@ const Navbar = () => {
         {/* Collapse Toggle */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="absolute -right-4 top-12 bg-gray-900 rounded-full p-2 text-white hover:scale-110 transition-transform shadow-lg z-50"
+          className="absolute -right-4 top-12 bg-gray-900 rounded-full  p-2 text-white hover:scale-110 transition-transform shadow-lg z-50"
         >
           <ChevronLeft size={16} className={isCollapsed ? "rotate-180" : ""} />
         </button>

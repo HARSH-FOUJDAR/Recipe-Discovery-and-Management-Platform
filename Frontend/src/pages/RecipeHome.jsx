@@ -115,17 +115,16 @@ const RecipeHome = () => {
     const matchesSearch = recipe.title
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
-      const matchesCategory =
+    const matchesCategory =
       activeCategory === "All" || recipe.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
 
   return (
     <>
-      <div className="bg-gray-50 min-h-screen pb-10 font-sans">
-        <Navbar />
-
-        <div className="bg-orange-500 py-12 md:py-20 px-4 text-center text-white">
+      <Navbar />
+      <div className="bg-gray-50  pb-10 font-sans">
+        <div className="bg-orange-500 py-12  md:py-20 px-4 text-center text-white">
           <h1 className="text-3xl md:text-5xl font-bold mb-6">
             Find Your Favorite Recipes
           </h1>
@@ -170,7 +169,7 @@ const RecipeHome = () => {
 
           {loading ? (
             <div className="h-64 flex flex-col justify-center items-center">
-              <ClipLoader color="#f97316" size={50} />
+              <ClipLoader color="#f97316" size={70} />
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 md:gap-8">

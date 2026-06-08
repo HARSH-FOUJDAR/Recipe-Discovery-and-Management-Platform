@@ -4,12 +4,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Clock, ArrowRight, ChefHat, UtensilsCrossed } from "lucide-react"; // Modern Icons
+import { FaSearch } from "react-icons/fa";
 import HomeNavar from "../components/HomeNavbar";
-import Images from "../assets/images/images.png";
+import Images from "../assets/images/png-images-removebg-preview.png"; // Hero Image
 import Footer from "../components/Footer";
 const Home = () => {
   const [recipes, setRecipe] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [serarchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setCategory] = useState("All");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,80 +49,142 @@ const Home = () => {
     visible: { y: 0, opacity: 1 },
   };
 
+  const handleSearch = recipes.filter((recipe) => {
+    const matchSerach = recipe.title
+      .toLowerCase()
+      .includes(serarchTerm.toLowerCase());
+
+    const matchCatogry =
+      activeCategory === "All" || recipe.category === activeCategory;
+    return matchSerach && matchCatogry;
+  });
+
   return (
     <>
-      <div className="bg-[#FAFAFA] min-h-screen font-sans selection:bg-orange-500">
+      <div className="min-h-screen font-sans ">
         {/* HERO SECTION */}
-        <section className="relative overflow-hidden bg-orange-500 pb-20 border-b border-gray-100">
+        <section className="relative   pb-20 border-b border-gray-100 shadow-sm overflow-hidden">
+          <video
+            src="https://www.inspiredtaste.net/wp-content/uploads/2026/04/Thai-Chicken-Salad-Pro.webm"
+            autoPlay
+            loop
+            muted
+            className="absolute top-0 left-0 w-100vh h-100vh object-cover"
+          />
           <HomeNavar />
-          <div className="max-w-7xl mx-auto px-6 pt-12 lg:pt-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ x: -50, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              className="text-center lg:text-left z-10"
-            >
-              <span className="inline-block px-4 py-1.5 mb-6 text-sm font-semibold tracking-wider text-red-600 uppercase bg-red-50 rounded-full">
+          <div className="max-w-7xl mx-auto px-6 pt-12 lg:pt-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center z-10 relative">
+            <div className="max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
+              <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-orange-600 uppercase bg-orange-100 rounded-full">
                 Discover & Share
               </span>
-              <h1 className="text-6xl lg:text-7xl font-extrabold mb-6 tracking-tight text-gray-900">
-                Cook Like a{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-black">
-                  Pro
-                </span>
+              <h1 className="text-5xl lg:text-7xl font-extrabold mb-6 tracking-tight text-gray-900 leading-tight">
+                Cook Like a <span className="text-orange-600">Pro</span>
               </h1>
-              <p className="text-gray-900 max-w-lg mb-10 text-lg leading-relaxed mx-auto lg:mx-0">
-                Join a global community of foodies. Explore hand-picked recipes
-                that bring restaurant-quality flavors to your kitchen.
+              <p className="text-gray-900 mb-10 text-lg leading-relaxed">
+                Join our global community of food enthusiasts. Explore
+                hand-picked recipes that bring restaurant-quality flavors
+                directly to your home kitchen.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <button
+                  className="px-8 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition duration-200"
                   onClick={() => navigate("/login")}
-                  className="group flex items-center justify-center gap-2 bg-gray-900 text-white font-bold px-8 py-4 rounded-2xl hover:bg-red-600 transition-all duration-300 shadow-lg shadow-gray-200"
                 >
-                  Start Cooking{" "}
-                  <ArrowRight
-                    size={18}
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
+                  Explore Recipes
+                </button>
+                <button className="px-8 py-3 bg-gray-100 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition duration-200">
+                  Join Community
                 </button>
               </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1 }}
-              className="relative hidden lg:flex justify-end"
-            >
-              <div className="absolute inset-0 bg-red-200 rounded-full filter blur-[120px] opacity-20 animate-pulse"></div>
-              <img
-                src={Images}
-                alt="Food"
-                className="w-full rounded-full max-w-md drop-shadow-3xl relative z-10 animate-float"
-              />
-            </motion.div>
+            </div>
           </div>
         </section>
+        <section className="py-20 flex flex-col items-center justify-center ">
+          {/* Search Bar Container */}
+          <div className="flex items-center w-full max-w-2xl px-4 mb-16">
+            <div className="relative flex items-center w-full">
+              <FaSearch className="absolute left-6 text-gray-400 text-xl" />
+              <input
+                type="text"
+                placeholder="Search for delicious recipes..."
+                className="w-full border-2 border-orange-300 rounded-2xl pl-14 pr-6 py-4 focus:outline-none focus:ring-4 focus:ring-orange-500/20 shadow-sm"
+                value={serarchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button
+                type="submit"
+                onClick={(e) => setSearchTerm(e.target.value)}
+                className="absolute right-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-8 py-2.5 rounded-xl transition duration-200"
+              >
+                Search
+              </button>
+            </div>
+          </div>
 
+          {/* Content Wrapper */}
+          <div className="flex flex-col lg:flex-row items-center gap-12 px-6 max-w-6xl">
+            {/* Main Image */}
+            <div className="w-full lg:w-1/2">
+              <img
+                src="https://recipekeeperonline.com/Images/en/laptopphone.png"
+                alt="App display on laptop and phone"
+                className="rounded-3xl shadow-2xl w-full"
+              />
+            </div>
+
+            {/* App Store Buttons */}
+            <div className="flex flex-col gap-4 w-full lg:w-auto">
+              <h3 className="text-2xl font-extrabold text-gray-900 mb-2">
+                Get the App
+              </h3>
+              <p className="text-gray-600 mb-2">
+                Sync your recipes everywhere.
+              </p>
+
+              <a href="#" className="transition hover:opacity-90">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                  alt="Get it on Google Play"
+                  className="h-14"
+                />
+              </a>
+              <a href="#" className="transition hover:opacity-90">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+                  alt="Download on the App Store"
+                  className="h-14"
+                />
+              </a>
+            </div>
+          </div>
+        </section>
+        <hr className="border-orange-500 " />
         {/* RECIPES SECTION */}
-        <section className="py-20">
+        <section className="  mx-auto   min-h-screen py-20">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-              <div>
-                <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
+              <div className="flex flex-col text-center items-center mx-auto justify-center md:justify-start">
+                <h2 className="text-4xl font-bold text-gray-900">
                   Popular Recipes
                 </h2>
                 <p className="text-gray-500 mt-2 text-lg">
-                  Specially curated for your taste buds
+                  Cook with confidence. Sharing trusted recipes since 2009,
+                  loved by millions of happy home cooks. health-conscious
+                  recipes inspired by the yogic lifestyle. Whether you’re
+                  looking to energize your morning, rejuvenate after a long day,
+                  or celebrate with friends and family. From hearty
+                  lacto-vegetarian dishes to refreshing beverages and sweet
+                  treats, every recipe is designed to uplift your spirit and
+                  nourish your body. Dive into a world of wholesome ingredients,
+                  vibrant flavors, and culinary inspiration that aligns with
+                  your journey toward a balanced and fulfilling life.
                 </p>
               </div>
-              <div className="h-[2px] flex-grow mx-8 bg-gray-100 hidden md:block mb-4"></div>
             </div>
 
             <AnimatePresence mode="wait">
               {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
                   {[1, 2, 3, 4].map((i) => (
                     <div
                       key={i}
@@ -135,9 +200,9 @@ const Home = () => {
                 >
                   <UtensilsCrossed
                     size={48}
-                    className="mx-auto text-gray-300 mb-4"
+                    className="mx-auto text-gray-500 mb-4"
                   />
-                  <p className="text-xl text-gray-400 font-medium">
+                  <p className="text-xl text-gray-500 font-medium">
                     No recipes found yet.
                   </p>
                 </motion.div>
@@ -146,17 +211,17 @@ const Home = () => {
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
-                  {recipes.map((recipe) => (
+                  {handleSearch.map((recipe) => (
                     <motion.div
                       key={recipe._id}
                       variants={cardVariants}
                       whileHover={{ y: -10 }}
                       onClick={() => handleView(recipe._id)}
-                      className="group bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-red-100 transition-all duration-500 cursor-pointer"
+                      className="group bg-gray-100 rounded-4xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-red-100 transition-all duration-500 cursor-pointer"
                     >
-                      <div className="relative h-60 overflow-hidden">
+                      <div className="relative h-60 overflow-hidden ">
                         <img
                           src={
                             recipe.photos?.[0] ||
@@ -172,15 +237,15 @@ const Home = () => {
                       </div>
 
                       <div className="p-6">
-                        <h3 className="font-bold text-xl text-gray-900 mb-2 group-hover:text-red-600 transition-colors line-clamp-1">
+                        <h3 className="font-bold text-xl text-gray-800 mb-2 group-hover:text-red-600 transition-colors line-clamp-1">
                           {recipe.title}
                         </h3>
-                        <p className="text-gray-500 text-sm line-clamp-2 leading-relaxed mb-6">
+                        <p className="text-gray-900 text-sm line-clamp-2 leading-relaxed mb-6">
                           {recipe.instructions ||
                             "Tap to see the secret ingredients and steps."}
                         </p>
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold uppercase tracking-widest text-gray-600">
+                          <span className="text-xs font-bold uppercase tracking-widest text-gray-600 underline decoration-gray-400 decoration-2 *:transition-all group-hover:decoration-red-500">
                             View Detail
                           </span>
                           <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-colors">
@@ -206,6 +271,7 @@ const Home = () => {
         }
       `}</style>
       </div>
+
       <Footer></Footer>
     </>
   );

@@ -84,7 +84,7 @@ const MyRecipe = () => {
           <input
             type="text"
             placeholder="Search your dishes..."
-            className="w-full p-4 pl-15 rounded-2xl bg-white border border-black text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 backdrop-blur-sm transition-all"
+            className="w-full p-3 pl-15 rounded-2xl bg-white border border-orange-300 text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-800 backdrop-blur-sm transition-all"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

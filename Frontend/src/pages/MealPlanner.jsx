@@ -144,16 +144,17 @@ const MealPlanner = () => {
       </div>
     );
   return (
-    <div className="min-h-screen bg-slate-50 pb-10">
-      <Navbar />
-      <div className="max-w-6xl mx-auto p-4 md:p-8">
+    <>
+    <Navbar />
+    <div className="bg-gray-50 min-h-screen pb-10 font-sans">
+      <div className="max-w-7xl mx-auto p-4 md:p-8">
         <header className="mb-10">
           <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
             <FaUtensils className="text-indigo-600" /> Meal Planner
           </h1>
         </header>
 
-        <div className="grid  gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* FORM */}
           <div className="lg:col-span-2">
             <div className="bg-white p-6 rounded-2xl shadow-md sticky top-8 border border-slate-100">
@@ -373,6 +374,7 @@ const MealPlanner = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
